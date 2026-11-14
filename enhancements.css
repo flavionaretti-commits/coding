@@ -200,3 +200,104 @@ html.coding-dark { --paper: #191624; --ink: #f1ecf6; --muted: #c6b8d2; --purple:
   .coding-quick-controls, .coding-about-dialog:not([open]) { display:none !important; }
   .coding-dark body { background:white !important; color:#222 !important; }
 }
+
+
+/* CODING LAB · Lettura comoda v1.2 */
+/*
+ * Obiettivo: leggibilità comparabile alle altre app didattiche.
+ * Testo ordinario 17–18px, etichette almeno 14px, senza zoom CSS della pagina.
+ * Le griglie cedono spazio alle parole invece di ridurre i font.
+ */
+body { font-size: 17px; line-height: 1.65; }
+.nav-item, .new-sidebar, .sidebar-help { font-size: 16px !important; }
+.space-label, .sidebar-footer, .method-note p, .method-note button,
+.breadcrumb, .cloud-state, .main-footer { font-size: 14px !important; }
+.method-note h3 { font-size: 17px; }
+.hero-copy > p, .catalog-heading p, .section-heading > p,
+.method-strip, .student-bar, .student-bar > button, .storage-strip,
+.feedback-card > p, .assignment-card > p, .empty-state > p,
+.guide-phase-content > p, .guide-phase-content li,
+.feedback-invite p, .storage-grid p, .install-guide p,
+.coding-about-body { font-size: 17px !important; line-height: 1.65; }
+.hero-facts, .hero-facts b, .method-strip button,
+.path-tile > span:last-child, .count-pill, .card-category,
+.level-name, .card-time, .card-review, .concept-tags > span,
+.card-body .concept-tags > span, .feedback-project, .feedback-card-top strong,
+.feedback-card-top > div > span, .assignment-meta, .assignment-progress,
+.review-row small, .active-filters, .catalog-toolbar,
+.learning-progress > span, .step-state, .storage-strip > button,
+.eyebrow, .field-hint, .form-field .field-hint,
+.project-metadata > span, .pwa-banner, .offline-pill { font-size: 14px !important; }
+.path-tile strong { font-size: 16px !important; line-height: 1.4; }
+.card-body h3 { font-size: 22px !important; line-height: 1.3; }
+.card-body > p { font-size: 17px !important; line-height: 1.6; min-height: 0; }
+.search-field input, .filter-select select, .sort-controls select,
+.sort-controls label, .text-button, .primary, .secondary,
+.mode-switch button, .projection-button, .data-button,
+.hero-buttons .text-button, .clear-filter, .filter-chip,
+.project-tabs > button, .steps-heading .text-button,
+.feedback-invite .secondary, .guide-phases > button strong,
+.assignment-projects > button, .form-field,
+.form-field input, .form-field select, .form-field textarea,
+.review-row strong { font-size: 16px !important; }
+.section-intro, .plain-list li, .guided-content .plain-list li,
+.step-content > p, .checkpoint span,
+.help-details p, .help-details summary, .aside-box .plain-list li,
+.trouble-box .plain-list li, .teacher-notes p,
+.criteria-grid > div > p, .project-title > div > p,
+.guide-phase-content li, .storage-note p { font-size: 18px !important; line-height: 1.65; }
+.step-heading { font-size: 18px !important; line-height: 1.45; }
+.aside-box h3, .guided-content h2, .feedback-invite h3 { font-size: 19px !important; }
+.project-title h1 { font-size: clamp(27px, 3vw, 36px); }
+.project-tabs { flex-wrap: wrap; gap: 12px 22px; }
+.project-tabs > button { white-space: normal; }
+.form-field input, .form-field select, .form-field textarea { min-height: 44px; }
+.step-content { overflow-wrap: anywhere; }
+.project-modal-footer { flex-wrap: wrap; }
+.card-body .concept-tags { gap: 7px; }
+.card-bottom { align-items: center; flex-wrap: wrap; gap: 8px; }
+.nav-count, .status-badge, .kind-badge, .project-code { font-size: 14px !important; }
+.primary, .secondary { white-space: normal; text-align: center; }
+
+/* Sui laptop medi, più colonne non devono comprimere le scritte. */
+@media (min-width: 761px) and (max-width: 1350px) {
+  .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .path-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1351px) and (max-width: 1599px) {
+  .path-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 761px) and (max-width: 1060px) {
+  .project-columns { grid-template-columns: minmax(0, 1fr); }
+}
+@media (min-width: 481px) and (max-width: 760px) {
+  .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .path-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .card-body h3 { font-size: 20px !important; }
+}
+@media (max-width: 600px) {
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-columns { grid-template-columns: minmax(0, 1fr); }
+  .step-content { padding-left: 17px; padding-right: 17px; }
+  .modal.wide { max-width: calc(100vw - 22px); }
+  .project-content { padding: 20px 17px; }
+  .project-title { grid-template-columns: 1fr; padding: 22px 18px; }
+  .project-title-art { display: none; }
+  .project-tabs { padding: 0 16px; gap: 6px 17px; }
+  .project-tabs > button { padding: 12px 0; }
+  .filter-bar { flex-wrap: wrap; }
+  .filter-select { min-width: 120px; flex: 1 1 120px; }
+  .catalog-toolbar { flex-wrap: wrap; gap: 8px; }
+}
+@media (max-width: 480px) {
+  .path-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .top-actions .mode-switch button { font-size: 0 !important; }
+  .top-actions .mode-switch button svg { width: 18px; height: 18px; }
+  .cloud-state { display: none; }
+  .card-body h3 { font-size: 22px !important; }
+  .coding-about-body { font-size: 17px !important; }
+}
+@media print {
+  body { font-size: 12pt; }
+  .step-content > p, .plain-list li { font-size: 12pt !important; }
+}
