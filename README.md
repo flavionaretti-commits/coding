@@ -21,6 +21,11 @@ Se Pages non è attivo: **Settings → Pages → Deploy from a branch → main �
 - Layout adattivo, stampa delle schede e pulsante Proietta.
 - Installazione come PWA e consultazione offline dopo il primo caricamento completo.
 
+
+## Aspetto e leggibilità
+
+La barra superiore include **giorno/notte** (preferenza salvata nel browser) e **informazioni**. Il foglio `enhancements.css` aumenta la dimensione dei testi piccoli e contiene il tema scuro e le regole responsive; `enhancements.js` gestisce i due pulsanti e la finestra informativa. Entrambi vengono caricati dopo il bundle originale, precache dal service worker e copiati anche in `dist/` dai successivi `npm run build`. Questa funzionalità non modifica l'archivio locale o cloud.
+
 ## Dove rimangono i dati
 
 **Modalità iniziale: questo dispositivo.** Schede, revisioni e checklist sono salvate in IndexedDB, nel browser. Non vengono pubblicate nella repository. La stessa app aperta su un altro dispositivo inizia da un archivio separato. Usare **Dati → Esporta / Importa** per trasferirlo.
