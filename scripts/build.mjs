@@ -1,0 +1,23 @@
+import {build} from 'esbuild';
+import {readFile,writeFile,mkdir,rm,cp,readdir} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+const hash=s=>createHash('sha256').update(s).digest('hex').slice(0,12);
+await mkdir('assets',{recursive:true});
+const result=await build({entryPoints:['src/main.tsx'],bundle:true,write:false,outdir:'assets',entryNames:'app',minify:true,format:'esm',jsx:'automatic',target:['es2020','safari15'],define:{'process.env.NODE_ENV':'"production"'},legalComments:'none'});
+for(const f of await readdir('assets'))if(/^app-.*\.(js|css)$/.test(f))await rm('assets/'+f);
+let js='',css='';const files=[];
+for(const file of result.outputFiles){const ext=file.path.endsWith('.css')?'css':'js';const name='assets/app-'+hash(file.contents)+'.'+ext;await writeFile(name,file.contents);files.push(name);if(ext==='js')js=name;else css=name;}
+const html=`<!doctype html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#7353ae"><meta name="description" content="24 progetti Scratch: scegli, costruisci, trasforma. Catalogo modificabile e laboratorio per la scuola secondaria di primo grado."><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="CODING LAB"><title>CODING LAB · Il tuo laboratorio Scratch</title><link rel="icon" href="./icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./icons/apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./${css}"></head><body><div id="root"></div><noscript>Per usare CODING LAB attiva JavaScript nel browser.</noscript><script type="module" src="./${js}"></script></body></html>`;
+await writeFile('index.html',html);
+const manifest={id:'./',name:'CODING LAB · Il tuo laboratorio Scratch',short_name:'CODING LAB',description:'24 progetti Scratch per scegliere, creare e personalizzare.',lang:'it',start_url:'./',scope:'./',display:'standalone',background_color:'#fbfaf7',theme_color:'#7353ae',icons:[{src:'./icons/icon-192.png',sizes:'192x192',type:'image/png',purpose:'any'},{src:'./icons/icon-512.png',sizes:'512x512',type:'image/png',purpose:'any'},{src:'./icons/maskable-512.png',sizes:'512x512',type:'image/png',purpose:'maskable'}]};
+await writeFile('manifest.webmanifest',JSON.stringify(manifest,null,2)+'\n');
+const shell=['./','./index.html','./manifest.webmanifest',...files.map(f=>'./'+f),'./icons/icon.svg','./icons/icon-192.png','./icons/icon-512.png','./icons/maskable-512.png','./icons/apple-touch-icon.png'];
+const version=hash(html+JSON.stringify(manifest)+JSON.stringify(shell));
+await writeFile('service-worker.js',`// CODING LAB PWA · ${version}\nconst PREFIX='coding-lab-'+encodeURIComponent(self.registration.scope)+'-';const CACHE=PREFIX+'${version}';\nconst SHELL=${JSON.stringify(shell)};\nself.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL))));\nself.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith(PREFIX)&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));\nself.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});\nself.addEventListener('fetch',event=>{const r=event.request,u=new URL(r.url);if(r.method!=='GET'||u.origin!==self.location.origin)return;if(r.mode==='navigate'){event.respondWith(fetch(r).catch(()=>caches.match('./index.html')));return}event.respondWith(caches.match(r).then(hit=>hit||fetch(r).then(response=>{if(response.ok&&u.pathname.startsWith(new URL(self.registration.scope).pathname)){const copy=response.clone();caches.open(CACHE).then(c=>c.put(r,copy)).catch(()=>{})}return response})));});\n`);
+await writeFile('.nojekyll','');
+const engine=await build({entryPoints:['src/cloud-runtime.ts'],bundle:true,write:false,minify:true,format:'iife',globalName:'CodingLabEngine',target:'es2020',legalComments:'none'});
+await writeFile('cloud/Code.gs','// Motore generato dal codice condiviso della PWA.\n'+engine.outputFiles[0].text+'\n'+await readFile('cloud/server-template.gs','utf8'));
+await rm('dist',{recursive:true,force:true});await mkdir('dist');
+for(const path of ['index.html','assets','icons','manifest.webmanifest','service-worker.js','.nojekyll'])await cp(path,'dist/'+path,{recursive:true});
+console.log('Build pronta: index.html + asset PWA; archivio cloud in cloud/Code.gs.');

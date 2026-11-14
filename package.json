@@ -1,0 +1,10 @@
+{
+  "name":"coding-lab-pwa",
+  "version":"1.0.0",
+  "private":true,
+  "type":"module",
+  "description":"24 progetti Scratch · PWA per GitHub Pages",
+  "scripts":{"build":"node scripts/build.mjs","test":"node --test tests/*.test.mjs","typecheck":"tsc --noEmit"},
+  "dependencies":{"react":"19.2.6","react-dom":"19.2.6","lucide-react":"1.31.0"},
+  "devDependencies":{"esbuild":"0.27.4","typescript":"5.9.3","@types/react":"19.2.14","@types/react-dom":"19.2.3","@types/node":"22.19.19"}
+}
